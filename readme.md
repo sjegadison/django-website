@@ -100,7 +100,163 @@ python manage.py collectstatic
 161 static files copied to '/Users/siva/python/PythonDev_Deploy/btre_project/static'.
 (venv) (base) Sivaguru-MBP:btre_project siva$ 
 
+# https://postgresapp.com/downloads.html
+# https://www.postgresql.org/ftp/pgadmin/pgadmin4/v4.16/macos/
 
+# Postgres Console
+postgres=# \password postgres
+Enter new password: Postgres
+Enter it again: Postgres
+postgres=# CREATE DATABASE btredb OWNER postgres;
+CREATE DATABASE
+postgres=# \l --- List databases
+
+# pgAdmin Pwd : PGAdmin
+
+# which pg_config
+/Applications/Postgres.app/Contents/Versions/10/bin/pg_config
+
+Add this to .bash_profile PATH 
+
+nano .bash_profile
+export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/10/bin
+
+# settings.py of btre project
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'btredb',
+        'USER': 'postgres',
+        'PASSWORD': 'Postgres',
+        'HOST': 'localhost'
+    }
+}
+
+# Migrate
+python manage.py migrate 
+
+## You can also use
+python manage.py migrate listings
+python manage.py migrate realtors
+
+# Create Models for Listing and Realtors ( models.py)
+pip install pillow -- To use ImageField
+
+# Run - python manage.py makemigrations 
+It will create Table Postgres Source Code in Migration Folder
+
+# To show SQl
+python manage.py sqlmigrate listings 0001
+
+# Migrate models
+
+## python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, listings, realtors, sessions
+Running migrations:
+  Applying realtors.0001_initial... OK
+  Applying listings.0001_initial... OK
+
+# Create Admin Superuser
+python manage.py createsuperuser
+User ID: siva
+Password  : Admin
+
+# To store Images
+
+## settings.py of btre Project Folder
+
+# Media Folder Settings
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+## urls.py of btre Project Folder
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    path('',include('pages.urls')),
+    path('listings/',include('listings.urls')),
+    path('admin/', admin.site.urls),
+
+## add line
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Admin Console UI Enhancements
+Create a folder admin below templates
+Create a file named base_site.html and write
+
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block branding %}
+<h1 id="head">
+    <img src="{% static 'img/logo.png' %}" alt="BT Real Estate" class="brand_img" height=50 width=80>
+    Admin Area
+</h1>
+{% endblock %}
+
+# Css customization of Admin Website
+In btre project folder under sttic folder,
+create admin.css and add styles
+In file base_site.html add 
+
+
+{% block extrastyle %}
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}
+
+# Custon Clickable / Search / Filter / Editable  Columns of Listings
+In admin.py of listings folder
+
+class ListingAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'is_published','price', 'list_date', 'realtor')
+    list_display_links = ('id', 'title')
+    list_filter= ('realtor','price')
+    list_editable=('is_published',)
+    search_fields=('title','description','address','city','state','zipcode','price')
+    list_per_page=25
+
+admin.site.register(Listing,ListingAdmin)
+
+# Custon Clickable / Search / Filter / Editable  Columns of Realtors
+In admin.py of realtors folder
+
+# Fetch :istings from DB
+
+In listings -> views.py
+
+from.models import Listing
+
+def index(request):
+    listingsData = Listing.objects.all()
+    context = {
+        'listings': listingsData
+    }
+    return render(request, 'listings/listings.html', context)
+
+## for VS Code Intellisense to work :
+Ref : https://stackoverflow.com/questions/45135263/class-has-no-objects-member
+
+pip install pylint-django
+
+Then in Visual Studio Code goto: User Settings (Ctrl + , or File > Preferences > Settings if available ) Put in the following (please note the curly braces which are required for custom user settings in VSC):
+
+    "python.linting.pylintArgs": [
+        "--load-plugins", "pylint_django",
+        "--errors-only"
+    ],
+(or) 
+
+Add .pylintrc file in the base folder -- refer to alsouse.pylintrc
+
+# Adding Dynamic Listings
+Look for code in templates -> listings -> listings.html
+
+
+
+ 
 
 
 
