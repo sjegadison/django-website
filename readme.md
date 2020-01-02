@@ -1,4 +1,5 @@
 # Clear Browser Cache - Cmd + Shift + R (Mac) - Shift + F5 (Windows)
+# Less Secure Apps : https://myaccount.google.com/lesssecureapps
 # Create Virual Environment
 pip3 freeze
 python3 -m venv ./venv
