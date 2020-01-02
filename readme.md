@@ -236,6 +236,7 @@ def index(request):
     }
     return render(request, 'listings/listings.html', context)
 
+# git add . ; git commit -m "Message" ; git push -u origin master
 ## for VS Code Intellisense to work :
 Ref : https://stackoverflow.com/questions/45135263/class-has-no-objects-member
 
@@ -253,6 +254,9 @@ Add .pylintrc file in the base folder -- refer to alsouse.pylintrc
 
 # Adding Dynamic Listings
 Look for code in templates -> listings -> listings.html
+
+# accounts and Authentication
+python manage.py startapp accounts
 
 
 
