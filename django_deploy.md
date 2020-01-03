@@ -1,3 +1,24 @@
+# Kill Server in a sepcific Port No
+# Kill Django Server Port 8000 in ubuntu 18.0.4LTS (Linux Based)
+sudo lsof -t -i tcp:8000 | xargs kill -9
+
+# netstat -ntlp
+It will show something like this.
+
+   Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State           PID/Program name    
+tcp        0      0 127.0.0.1:8000          0.0.0.0:*               LISTEN      6599/python         
+tcp        0      0 127.0.0.1:27017         0.0.0.0:*               LISTEN      -                   
+tcp        0      0 192.168.124.1:53        0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      -                   
+tcp6       0      0 :::3306                 :::*                    LISTEN     
+So now just close the port in which Django/python running already by killing the process associated with it.
+# Kill Port 8000 Python App with Django 
+kill -9 PID
+in my case
+
+kill -9 6599
+
 # Django Deployment to Ubuntu 18.04 LTS
 
 # SSH to Digital Ocean Ubuntu 18.0.4LTS
@@ -198,9 +219,9 @@ CREATE USER dbadmin WITH PASSWORD 'abc123!';
 ### Set default encoding, tansaction isolation scheme (Recommended from Django)
 
 ```
-ALTER ROLE dbadmin SET client_encoding TO 'utf8';
-ALTER ROLE dbadmin SET default_transaction_isolation TO 'read committed';
-ALTER ROLE dbadmin SET timezone TO 'UTC';
+ALTER ROLE dbadmin1 SET client_encoding TO 'utf8';
+ALTER ROLE dbadmin1 SET default_transaction_isolation TO 'read committed';
+ALTER ROLE dbadmin1 SET timezone TO 'UTC';
 ```
 
 ### Give User access to database
@@ -302,6 +323,7 @@ Create a file called **local_settings.py** on your server along side of settings
 
 ```
 # python manage.py createsuperuser
+# siva - siva123
 ```
 
 ## Create static files
@@ -318,6 +340,7 @@ python manage.py collectstatic
 ## Run Server
 
 ```
+# local-settings.py - set debug=True
 # python manage.py runserver 0.0.0.0:8000
 ```
 
@@ -325,7 +348,7 @@ python manage.py collectstatic
 
 Add some data in the admin area
 
-# Gunicorn Setup
+# Gunicorn Setup - Python HTTP Server
 
 Install gunicorn
 
@@ -425,7 +448,7 @@ WantedBy=multi-user.target
 ### Create project folder
 
 ```
-# sudo nano /etc/nginx/sites-available/btre_project
+# sudo nano /etc/nginx/sites-available/django-website
 ```
 
 ### Copy this code and paste into the file
@@ -437,11 +460,11 @@ server {
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
-        root /home/djangoadmin/pyapps/btre_project;
+        root /home/djangoadmin/pyapps/django-website;
     }
     
     location /media/ {
-        root /home/djangoadmin/pyapps/btre_project;    
+        root /home/djangoadmin/pyapps/django-website;    
     }
 
     location / {
@@ -454,7 +477,7 @@ server {
 ### Enable the file by linking to the sites-enabled dir
 
 ```
-# sudo ln -s /etc/nginx/sites-available/btre_project /etc/nginx/sites-enabled
+# sudo ln -s /etc/nginx/sites-available/django-website /etc/nginx/sites-enabled
 ```
 
 ### Test NGINX config
@@ -497,7 +520,7 @@ client_max_body_size 20M;
 ```
 
 ### Media File Issue
-You may have some issues with images not showing up. I would suggest, deleting all data and starting fresh as well as removeing the "photos" folder in the "media folder"
+You may have some issues with images not showing up. I would suggest, deleting all data and starting fresh as well as removeing the "photos" folder in the "media folder" of django-website folder
 ```
 # sudo rm -rf media/photos
 ```
@@ -517,12 +540,13 @@ www  CNAME  example.com
 ALLOWED_HOSTS = ['IP_ADDRESS', 'example.com', 'www.example.com']
 ```
 
-### Edit /etc/nginx/sites-available/btre_project
+### Edit /etc/nginx/sites-available/django-website
 
 ```
 server {
     listen: 80;
     server_name xxx.xxx.xxx.xxx example.com www.example.com;
+
 }
 ```
 

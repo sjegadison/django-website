@@ -7,7 +7,7 @@ https://gist.github.com/bradtraversy/cfa565b879ff1458dba08f423cb01d71
 # Create Virual Environment
 pip3 freeze
 python3 -m venv ./venv
-pip3 freeze
+pip3 freeze 
 
 # Activate/ DeActivate/ Activate Virual Environment
 (base) Sivaguru-MBP:btre_project siva$ source ./venv/bin/activate
