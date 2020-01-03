@@ -1,4 +1,7 @@
-# Django Deployment to Ubuntu 18.04
+# Django Deployment to Ubuntu 18.04 LTS
+
+# SSH to Digital Ocean Ubuntu 18.0.4LTS
+ssh djangoadmin@206.189.140.96 - Pwd admin123
 
 In this guide I will go through all the steps to create a VPS, secure it and deploy a Django application. This is a summarized document from this [digital ocean doc](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-18-04)
 
